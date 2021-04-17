@@ -2,8 +2,8 @@ package account
 
 import (
 	entities "github.com/guil95/go-card/app/entities/account"
-	"github.com/guil95/go-card/app/infra"
-	"github.com/guil95/go-card/app/infra/repositories"
+	"github.com/guil95/go-card/infra"
+	"github.com/guil95/go-card/infra/repositories"
 )
 
 type Service struct {

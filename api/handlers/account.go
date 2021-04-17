@@ -6,7 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/guil95/go-card/app/domains/account"
-	"github.com/guil95/go-card/app/infra"
+	"github.com/guil95/go-card/infra"
 )
 
 //Index is the root api

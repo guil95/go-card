@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/guil95/go-card/app/infra/repositories"
+	"github.com/guil95/go-card/infra/repositories"
 
 	"github.com/guil95/go-card/api/handlers"
 	"github.com/guil95/go-card/app/domains/account"
