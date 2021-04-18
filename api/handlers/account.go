@@ -8,6 +8,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/gorilla/mux"
 	"github.com/guil95/go-card/app/domains/account"
+	"github.com/guil95/go-card/app/utils"
 	"github.com/guil95/go-card/infra"
 )
 
@@ -88,8 +89,43 @@ func saveAccount(service *account.Service) http.Handler {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
+		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(accountSaved)
+	})
+}
+
+func findAccount(service *account.Service) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		id, err := utils.StringToID(vars["id"])
+
+		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			json.NewEncoder(w).Encode(NewResponseError("Unprocessable entity"))
+			return
+		}
+
+		account, err := service.FindAccountByID(id)
+
+		if err == infra.ErrorNotFound {
+			log.Println(err.Error())
+			w.WriteHeader(http.StatusNotFound)
+			json.NewEncoder(w).Encode(NewResponseError("Account not found"))
+			return
+		}
+
+		if err != nil {
+			log.Println(err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(NewResponseError("Internal server error"))
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(account)
 	})
 }
 
@@ -108,6 +144,7 @@ func isValidRequest(payload interface{}) bool {
 
 func MakeAccountHandler(r *mux.Router, service *account.Service) {
 	r.Handle("/accounts", listAccounts(service)).Methods("GET", "OPTIONS").Name("listAccounts")
+	r.Handle("/accounts/{id}", findAccount(service)).Methods("GET", "OPTIONS").Name("findAccount")
 	r.Handle("/accounts", saveAccount(service)).Methods("POST", "OPTIONS").Name("saveAccount")
 
 }

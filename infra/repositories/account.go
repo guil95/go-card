@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	entities "github.com/guil95/go-card/app/entities/account"
+	"github.com/guil95/go-card/app/utils"
 )
 
 type AccountRepo struct {
@@ -54,6 +55,28 @@ func (accountRepo *AccountRepo) FindAccountByDocument(document string) (*entitie
 	var account entities.Account
 
 	rows, err := stmt.Query(document)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&account.ID, &account.Document)
+	}
+
+	return &account, nil
+}
+
+func (accountRepo *AccountRepo) FindAccountByID(id utils.ID) (*entities.Account, error) {
+	stmt, err := accountRepo.db.Prepare(`SELECT id, document_number FROM accounts WHERE id = ?`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var account entities.Account
+
+	rows, err := stmt.Query(id)
 
 	if err != nil {
 		return nil, err

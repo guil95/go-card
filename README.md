@@ -91,3 +91,35 @@ Caso de sucesso a API retornará status code `201` e com o seguinte corpo:
         "document_number": "12345678900"
     }
 ```
+
+## Para buscar uma conta
+`GET` para a rota `http://localhost:8000/accounts/{id}`: 
+
+ Caso envie uuid inválido a API retornará status code `422` e com o seguinte corpo: 
+```
+    {
+         "message": "Unprocessable entity"
+    }
+```
+
+Caso de erro interno a API retornará status code `500` e com o seguinte corpo:
+```
+    {
+         "message": "Internal Error"
+    }
+```
+
+Caso não encontre a conta cadastrada a API retornará status code `404` e com o seguinte corpo: 
+```
+    {
+         "message": "Account not found"
+    }
+```
+
+Caso de sucesso a API retornará status code `200` e com o seguinte corpo:
+```
+    {
+        "id": "43898e63-55a3-4efc-ab81-de3450c5d449",
+        "document_number": "12345678907"
+    }
+```
