@@ -23,8 +23,9 @@ func Run(db *sql.DB) {
 	r.HandleFunc("/", indexApiHandler)
 
 	var accountRepository = repositories.NewAccountRepo(db)
+	var accountService = account.NewService(accountRepository)
 
-	handlers.MakeAccountHandler(r, account.NewService(accountRepository))
+	handlers.MakeAccountHandler(r, accountService)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 }

@@ -27,3 +27,25 @@ func (s Service) ListAccounts() ([]*entities.Account, error) {
 
 	return accounts, nil
 }
+
+func (s Service) FindAccountByDocument(document string) (*entities.Account, error) {
+	account, err := s.repo.FindAccountByDocument(document)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
+}
+
+func (s Service) CreateAccount(document string) (*entities.Account, error) {
+	account := entities.NewAccount(document)
+
+	account, err := s.repo.CreateAccount(account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
+}
