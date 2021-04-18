@@ -1,4 +1,4 @@
-package transaction
+package entities
 
 type OperationType int64
 

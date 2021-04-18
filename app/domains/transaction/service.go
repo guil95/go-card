@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log"
 
+	entities "github.com/guil95/go-card/app/entities/transaction"
+
 	"github.com/guil95/go-card/app/domains/account"
 
 	"github.com/guil95/go-card/app/utils"
@@ -19,37 +21,50 @@ func NewService(r *repositories.TransactionRepo, as *account.Service) *Service {
 	return &Service{repo: r, accountService: as}
 }
 
-func (s Service) MakeTransaction(accountID utils.ID, amount float64, operationType OperationType) (bool, error) {
+func (s Service) MakeTransaction(accountID utils.ID, amount float64, operationType entities.OperationType) (*entities.Transaction, error) {
 	if !isValidOperationType(operationType) {
 		log.Println("Invalid Operation type with value:", operationType)
-		return false, errors.New("Invalid Operation type")
+		return nil, errors.New("Invalid Operation type")
 	}
 
 	account, err := s.accountService.FindAccountByID(accountID)
 
 	if err != nil {
 		log.Println(err.Error())
-		return false, err
+		return nil, err
 	}
 
-	amount = retrieveAmountType(operationType, amount)
+	transaction := entities.NewTransaction(accountID, operationType, amount)
 
-	return false, nil
+	if transactionIsDebit(operationType) {
+		transaction.Amount = amount * -1
+		//TODO Atualizar account
+	}
+
+	_, err = s.repo.SaveTransaction(transaction)
+
+	if err != nil {
+		log.Println(err.Error)
+		log.Println(account)
+		return nil, err
+	}
+
+	return transaction, nil
 }
 
-func retrieveAmountType(operationType OperationType, amount float64) (calculatedAmount float64) {
-	for i := range DebitTypes() {
-		if DebitTypes()[i] == operationType {
-			return amount * -1
+func transactionIsDebit(operationType entities.OperationType) bool {
+	for i := range entities.DebitTypes() {
+		if entities.DebitTypes()[i] == operationType {
+			return true
 		}
 	}
 
-	return amount
+	return false
 }
 
-func isValidOperationType(operationType OperationType) bool {
-	for i := range AllOperationsTypes() {
-		if AllOperationsTypes()[i] == operationType {
+func isValidOperationType(operationType entities.OperationType) bool {
+	for i := range entities.AllOperationsTypes() {
+		if entities.AllOperationsTypes()[i] == operationType {
 			return true
 		}
 	}
