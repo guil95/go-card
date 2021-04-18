@@ -9,6 +9,7 @@ import (
 
 	"github.com/guil95/go-card/api/handlers"
 	"github.com/guil95/go-card/app/domains/account"
+	"github.com/guil95/go-card/app/domains/transaction"
 
 	"github.com/gorilla/mux"
 )
@@ -25,7 +26,11 @@ func Run(db *sql.DB) {
 	var accountRepository = repositories.NewAccountRepo(db)
 	var accountService = account.NewService(accountRepository)
 
+	var transactionRepository = repositories.NewTransactionRepo(db)
+	var transferService = transaction.NewService(transactionRepository, accountService)
+
 	handlers.MakeAccountHandler(r, accountService)
+	handlers.MakeTransactionHandler(r, transferService)
 
 	log.Fatal(http.ListenAndServe(":8000", r))
 }

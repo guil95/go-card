@@ -64,6 +64,10 @@ func (accountRepo *AccountRepo) FindAccountByDocument(document string) (*entitie
 		err = rows.Scan(&account.ID, &account.Document)
 	}
 
+	if account.Document == "" {
+		return nil, nil
+	}
+
 	return &account, nil
 }
 
@@ -84,6 +88,10 @@ func (accountRepo *AccountRepo) FindAccountByID(id utils.ID) (*entities.Account,
 
 	for rows.Next() {
 		err = rows.Scan(&account.ID, &account.Document)
+	}
+
+	if account.Document == "" {
+		return nil, nil
 	}
 
 	return &account, nil

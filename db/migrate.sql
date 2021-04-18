@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS operations_types (
     description VARCHAR(255) NOT NULL
 )  ENGINE=INNODB;
 
-INSERT INTO operations_types (description) values ("IN_CASH");
-INSERT INTO operations_types (description) values ("INSTALLMENT");
+
+INSERT INTO operations_types (description) values ("PURCHASE_IN_CASH");
+INSERT INTO operations_types (description) values ("PURCHASE_INSTALLMENT");
 INSERT INTO operations_types (description) values ("WITHDRAW");
 INSERT INTO operations_types (description) values ("PAYMENT");

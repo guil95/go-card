@@ -1,13 +1,16 @@
 package entities
 
 import (
-	"github.com/google/uuid"
+	"errors"
+
 	"github.com/guil95/go-card/app/utils"
 )
 
+var ErrorAccountNotFound = errors.New("Account Not Found")
+
 type Account struct {
-	ID       uuid.UUID `json:"id"`
-	Document string    `json:"document_number"`
+	ID       utils.ID `json:"id"`
+	Document string   `json:"document_number"`
 }
 
 func NewAccount(documentNumber string) *Account {

@@ -5,11 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/go-playground/validator"
 	"github.com/gorilla/mux"
 	"github.com/guil95/go-card/app/domains/account"
+	entities "github.com/guil95/go-card/app/entities/account"
 	"github.com/guil95/go-card/app/utils"
-	"github.com/guil95/go-card/infra"
 )
 
 //Index is the root api
@@ -17,7 +16,7 @@ func listAccounts(service *account.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		accounts, err := service.ListAccounts()
 
-		if err == infra.ErrorNotFound {
+		if err == entities.ErrorAccountNotFound {
 			log.Println(err.Error())
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(NewResponseError("Accounts not found"))
@@ -71,7 +70,7 @@ func saveAccount(service *account.Service) http.Handler {
 			return
 		}
 
-		if account.Document != "" {
+		if account != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			json.NewEncoder(w).Encode(NewResponseError("Account exists"))
@@ -108,7 +107,7 @@ func findAccount(service *account.Service) http.Handler {
 
 		account, err := service.FindAccountByID(id)
 
-		if err == infra.ErrorNotFound {
+		if err == entities.ErrorAccountNotFound {
 			log.Println(err.Error())
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(NewResponseError("Account not found"))
@@ -129,22 +128,8 @@ func findAccount(service *account.Service) http.Handler {
 	})
 }
 
-func isValidRequest(payload interface{}) bool {
-	var validate *validator.Validate = validator.New()
-
-	err := validate.Struct(payload)
-
-	if err != nil {
-		log.Println(err.Error())
-		return false
-	}
-
-	return true
-}
-
 func MakeAccountHandler(r *mux.Router, service *account.Service) {
 	r.Handle("/accounts", listAccounts(service)).Methods("GET", "OPTIONS").Name("listAccounts")
 	r.Handle("/accounts/{id}", findAccount(service)).Methods("GET", "OPTIONS").Name("findAccount")
 	r.Handle("/accounts", saveAccount(service)).Methods("POST", "OPTIONS").Name("saveAccount")
-
 }

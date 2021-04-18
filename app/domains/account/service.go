@@ -3,7 +3,6 @@ package account
 import (
 	entities "github.com/guil95/go-card/app/entities/account"
 	"github.com/guil95/go-card/app/utils"
-	"github.com/guil95/go-card/infra"
 	"github.com/guil95/go-card/infra/repositories"
 )
 
@@ -19,7 +18,7 @@ func (s Service) ListAccounts() ([]*entities.Account, error) {
 	accounts, err := s.repo.List()
 
 	if accounts == nil {
-		return nil, infra.ErrorNotFound
+		return nil, entities.ErrorAccountNotFound
 	}
 
 	if err != nil {
@@ -46,8 +45,8 @@ func (s Service) FindAccountByID(id utils.ID) (*entities.Account, error) {
 		return nil, err
 	}
 
-	if account.Document == "" {
-		return nil, infra.ErrorNotFound
+	if account == nil {
+		return nil, entities.ErrorAccountNotFound
 	}
 
 	return account, nil
