@@ -5,11 +5,10 @@
     - MySql
 
 # Estruturação do projeto
-    - api (Configuração de rotas)
-    - app (Regras de negócio)
-        |
-        |domains(Domínios da aplicação)
-    - infra (Dependencias externas, como por exemplo banco de dados)
+    └─── api (Configuração de rotas)
+    └─── app (Regras de negócio)
+         └───domains(Domínios da aplicação)
+    └───infra (Dependencias externas, como por exemplo banco de dados)
 
 # Como subir a aplicação?
 ```shell
