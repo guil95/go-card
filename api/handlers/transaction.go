@@ -8,13 +8,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/guil95/go-card/app/domains/transaction"
 	entities "github.com/guil95/go-card/app/entities/transaction"
-	"github.com/guil95/go-card/app/utils"
+	"github.com/guil95/go-card/app/vo/uuid"
 )
 
 func makeTransaction(service *transaction.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var payload struct {
-			AccountID     utils.ID               `json:"account_id" validate:"required"`
+			AccountID     uuid.ID                `json:"account_id" validate:"required"`
 			OperationType entities.OperationType `json:"operation_type_id" validate:"required,oneof=1 2 3 4"`
 			Amount        float64                `json:"amount" validate:"required,min=0.1"`
 		}

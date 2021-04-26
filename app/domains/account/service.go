@@ -2,7 +2,7 @@ package account
 
 import (
 	entities "github.com/guil95/go-card/app/entities/account"
-	"github.com/guil95/go-card/app/utils"
+	"github.com/guil95/go-card/app/vo/uuid"
 	"github.com/guil95/go-card/infra/repositories"
 )
 
@@ -38,7 +38,7 @@ func (s Service) FindAccountByDocument(document string) (*entities.Account, erro
 	return account, nil
 }
 
-func (s Service) FindAccountByID(id utils.ID) (*entities.Account, error) {
+func (s Service) FindAccountByID(id uuid.ID) (*entities.Account, error) {
 	account, err := s.repo.FindAccountByID(id)
 
 	if err != nil {

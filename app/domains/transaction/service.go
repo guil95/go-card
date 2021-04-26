@@ -5,10 +5,10 @@ import (
 	"log"
 
 	entities "github.com/guil95/go-card/app/entities/transaction"
+	"github.com/guil95/go-card/app/vo/uuid"
 
 	"github.com/guil95/go-card/app/domains/account"
 
-	"github.com/guil95/go-card/app/utils"
 	"github.com/guil95/go-card/infra/repositories"
 )
 
@@ -21,7 +21,7 @@ func NewService(r *repositories.TransactionRepo, as *account.Service) *Service {
 	return &Service{repo: r, accountService: as}
 }
 
-func (s Service) MakeTransaction(accountID utils.ID, amount float64, operationType entities.OperationType) (*entities.Transaction, error) {
+func (s Service) MakeTransaction(accountID uuid.ID, amount float64, operationType entities.OperationType) (*entities.Transaction, error) {
 	if !isValidOperationType(operationType) {
 		log.Println("Invalid Operation type with value:", operationType)
 		return nil, errors.New("Invalid Operation type")

@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/guil95/go-card/app/domains/account"
 	entities "github.com/guil95/go-card/app/entities/account"
-	"github.com/guil95/go-card/app/utils"
+	"github.com/guil95/go-card/app/vo/uuid"
 )
 
 //Index is the root api
@@ -97,7 +97,7 @@ func findAccount(service *account.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		id, err := utils.StringToID(vars["id"])
+		id, err := uuid.StringToID(vars["id"])
 
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
