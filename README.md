@@ -5,11 +5,10 @@
     - MySql
 
 # Estruturação do projeto
-    - api (Configuração de rotas)
-    - app (Regras de negócio)
-        |
-        |domains(Domínios da aplicação)
-    - infra (Dependencias externas, como por exemplo banco de dados)
+    └─── api (Configuração de rotas)
+    └─── app (Regras de negócio)
+         └───domains(Domínios da aplicação)
+    └───infra (Dependencias externas, como por exemplo banco de dados)
 
 # Como subir a aplicação?
 ```shell
@@ -154,7 +153,7 @@ Caso de sucesso a API retornará status code `201` e com o seguinte corpo:
         "id": "3f9bf1ee-e70f-4257-876e-c6798dad4f9d",
         "account_id": "2d83ef93-c87d-413e-81cf-97241fdc02ba",
         "operation_type_id": 1,
-        "amount": -1,
+        "amount": 10.50,
         "event_date": "2021-04-18T22:34:16.8053513Z"
     }
 ```
