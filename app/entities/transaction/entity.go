@@ -1,10 +1,13 @@
 package entities
 
 import (
+	"errors"
 	"time"
 
 	"github.com/guil95/go-card/app/vo/uuid"
 )
+
+var ErrorAccountCreditLimit = errors.New("account Credit Limit")
 
 type Transaction struct {
 	ID              uuid.ID       `json:"id"`

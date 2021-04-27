@@ -46,7 +46,7 @@ func (accountRepo *AccountRepo) List() ([]*entities.Account, error) {
 }
 
 func (accountRepo *AccountRepo) FindAccountByDocument(document string) (*entities.Account, error) {
-	stmt, err := accountRepo.db.Prepare(`SELECT id, document_number FROM accounts WHERE document_number = ?`)
+	stmt, err := accountRepo.db.Prepare(`SELECT id, document_number, available_credit_limit FROM accounts WHERE document_number = ?`)
 
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func (accountRepo *AccountRepo) FindAccountByDocument(document string) (*entitie
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&account.ID, &account.Document)
+		err = rows.Scan(&account.ID, &account.Document, &account.AvailableCreditLimit)
 	}
 
 	if account.Document == "" {
@@ -72,7 +72,7 @@ func (accountRepo *AccountRepo) FindAccountByDocument(document string) (*entitie
 }
 
 func (accountRepo *AccountRepo) FindAccountByID(id uuid.ID) (*entities.Account, error) {
-	stmt, err := accountRepo.db.Prepare(`SELECT id, document_number FROM accounts WHERE id = ?`)
+	stmt, err := accountRepo.db.Prepare(`SELECT id, document_number, available_credit_limit FROM accounts WHERE id = ?`)
 
 	if err != nil {
 		return nil, err
@@ -87,7 +87,7 @@ func (accountRepo *AccountRepo) FindAccountByID(id uuid.ID) (*entities.Account, 
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&account.ID, &account.Document)
+		err = rows.Scan(&account.ID, &account.Document, &account.AvailableCreditLimit)
 	}
 
 	if account.Document == "" {
@@ -98,13 +98,35 @@ func (accountRepo *AccountRepo) FindAccountByID(id uuid.ID) (*entities.Account, 
 }
 
 func (accountRepo *AccountRepo) CreateAccount(account *entities.Account) (*entities.Account, error) {
-	stmt, err := accountRepo.db.Prepare(`INSERT INTO accounts (id, document_number) values (?,?)`)
+	stmt, err := accountRepo.db.Prepare(`INSERT INTO accounts (id, document_number, available_credit_limit) values (?,?,?)`)
 
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = stmt.Exec(account.ID, account.Document)
+	_, err = stmt.Exec(account.ID, account.Document, account.AvailableCreditLimit)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = stmt.Close()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
+}
+
+func (accountRepo *AccountRepo) UpdateAvailableCreditLimit(account *entities.Account) (*entities.Account, error) {
+	stmt, err := accountRepo.db.Prepare(`UPDATE accounts SET available_credit_limit = ? WHERE ID = ?`)
+
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = stmt.Exec(account.AvailableCreditLimit, account.ID)
 
 	if err != nil {
 		return nil, err

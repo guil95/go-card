@@ -6,7 +6,8 @@ DROP TABLE IF EXISTS accounts, operations_types, transactions;
 
 CREATE TABLE IF NOT EXISTS accounts (
     id VARCHAR(255) UNIQUE PRIMARY KEY,
-    document_number VARCHAR(255) NOT NULL
+    document_number VARCHAR(255) NOT NULL,
+    available_credit_limit DECIMAL(12,2) NOT NULL
 )  ENGINE=INNODB;
 
 CREATE TABLE IF NOT EXISTS operations_types (

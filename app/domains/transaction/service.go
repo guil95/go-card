@@ -41,7 +41,21 @@ func (s Service) MakeTransaction(accountID uuid.ID, amount float64, operationTyp
 		//TODO Atualizar account
 	}
 
+	if account.AvailableCreditLimit+transaction.Amount < 0 {
+		return nil, entities.ErrorAccountCreditLimit
+	}
+
+	account.AvailableCreditLimit = account.AvailableCreditLimit + transaction.Amount
+
 	_, err = s.repo.SaveTransaction(transaction)
+
+	if err != nil {
+		log.Println(err.Error)
+		log.Println(account)
+		return nil, err
+	}
+
+	_, err = s.accountService.UpdateAvailableCreditLimit(account)
 
 	if err != nil {
 		log.Println(err.Error)

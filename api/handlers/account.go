@@ -40,7 +40,8 @@ func listAccounts(service *account.Service) http.Handler {
 func saveAccount(service *account.Service) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var payload struct {
-			Document string `json:"document_number" validate:"required"`
+			Document             string  `json:"document_number" validate:"required"`
+			AvailableCreditLimit float64 `json:"available_credit_limit" validate:"required,min=0.1"`
 		}
 
 		err := json.NewDecoder(r.Body).Decode(&payload)
@@ -77,7 +78,7 @@ func saveAccount(service *account.Service) http.Handler {
 			return
 		}
 
-		accountSaved, err := service.CreateAccount(payload.Document)
+		accountSaved, err := service.CreateAccount(payload.Document, payload.AvailableCreditLimit)
 
 		if err != nil {
 			log.Println(err.Error())

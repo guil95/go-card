@@ -52,10 +52,21 @@ func (s Service) FindAccountByID(id uuid.ID) (*entities.Account, error) {
 	return account, nil
 }
 
-func (s Service) CreateAccount(document string) (*entities.Account, error) {
-	account := entities.NewAccount(document)
+func (s Service) CreateAccount(document string, availableCreditLimit float64) (*entities.Account, error) {
+	account := entities.NewAccount(document, availableCreditLimit)
 
 	account, err := s.repo.CreateAccount(account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return account, nil
+}
+
+func (s Service) UpdateAvailableCreditLimit(account *entities.Account) (*entities.Account, error) {
+
+	account, err := s.repo.UpdateAvailableCreditLimit(account)
 
 	if err != nil {
 		return nil, err

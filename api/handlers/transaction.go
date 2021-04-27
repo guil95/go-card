@@ -38,6 +38,13 @@ func makeTransaction(service *transaction.Service) http.Handler {
 
 		transaction, err := service.MakeTransaction(payload.AccountID, payload.Amount, payload.OperationType)
 
+		if err == entities.ErrorAccountCreditLimit {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			json.NewEncoder(w).Encode(NewResponseError("Account Credit Limit"))
+			return
+		}
+
 		if err != nil {
 			log.Println(err.Error())
 			w.Header().Set("Content-Type", "application/json")
